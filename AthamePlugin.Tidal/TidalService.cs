@@ -266,7 +266,7 @@ namespace AthamePlugin.Tidal
             set
             {
                 settings = (TidalServiceSettings)value ?? new TidalServiceSettings();
-                if (settings != null)
+                if (settings?.User != null)
                 {
                     Account = AccountInfoFromUser(settings.User);
                 }
