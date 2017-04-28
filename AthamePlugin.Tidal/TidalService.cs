@@ -14,7 +14,7 @@ using OpenTidl.Transport;
 
 namespace AthamePlugin.Tidal
 {
-    public class TidalService : MusicService, IRestorableAsync, IUsernamePasswordAuthenticationAsync
+    public class TidalService : MusicService, IUsernamePasswordAuthenticationAsync
     {
         private readonly OpenTidlClient client;
         private OpenTidlSession session;
@@ -245,13 +245,15 @@ namespace AthamePlugin.Tidal
             return CreateTrack(album, track);
         }
 
+        public void Reset()
+        {
+            Account = null;
+            settings.User = null;
+            session = null;
+        }
+
         public AccountInfo Account { get; private set; }
         public bool IsAuthenticated => session != null;
-
-        public Task<bool> AuthenticateAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public override Control GetSettingsControl()
         {
@@ -261,7 +263,14 @@ namespace AthamePlugin.Tidal
         public override object Settings
         {
             get { return settings; }
-            set { settings = (TidalServiceSettings)value ?? new TidalServiceSettings(); }
+            set
+            {
+                settings = (TidalServiceSettings)value ?? new TidalServiceSettings();
+                if (settings != null)
+                {
+                    Account = AccountInfoFromUser(settings.User);
+                }
+            }
         }
 
         public override Uri[] BaseUri
@@ -275,7 +284,9 @@ namespace AthamePlugin.Tidal
         public override string Description => "Plugin for Tidal music service.";
         public override string Author => "svbnet";
         public override Uri Website => new Uri("https://svbnet.co");
-        public override void Init(AthameApplication application)
+        public override PluginVersion ApiVersion => PluginVersion.V1;
+
+        public override void Init(AthameApplication application, PluginContext pluginContext)
         {
             
         }
@@ -297,7 +308,7 @@ namespace AthamePlugin.Tidal
             return session != null;
         }
 
-        public async Task<bool> Authenticate(string username, string password, bool rememberUser)
+        public async Task<bool> AuthenticateAsync(string username, string password, bool rememberUser)
         {
             try
             {
