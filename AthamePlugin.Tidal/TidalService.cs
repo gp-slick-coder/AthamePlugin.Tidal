@@ -322,6 +322,7 @@ namespace AthamePlugin.Tidal
             Account = AccountInfoFromUser(user);
             if (rememberUser)
             {
+                settings.User = user;
                 settings.SessionToken = session.SessionId;
             }
             return true;
