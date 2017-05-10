@@ -16,6 +16,16 @@ namespace AthamePlugin.Tidal
 {
     public class TidalService : MusicService, IUsernamePasswordAuthenticationAsync
     {
+        public override int ApiVersion => 1;
+
+        public override PluginInfo Info => new PluginInfo
+        {
+            Author = "svbnet",
+            Description = "Plugin for Tidal music service.",
+            Name = "Tidal",
+            Website = new Uri("https://svbnet.co")
+        };
+
         private readonly OpenTidlClient client;
         private OpenTidlSession session;
         private TidalServiceSettings settings = new TidalServiceSettings();
@@ -280,11 +290,8 @@ namespace AthamePlugin.Tidal
                 new Uri("http://tidal.com"), new Uri("https://tidal.com"),
             };
 
-        public override string Name => "Tidal";
-        public override string Description => "Plugin for Tidal music service.";
-        public override string Author => "svbnet";
-        public override Uri Website => new Uri("https://svbnet.co");
-        public override PluginVersion ApiVersion => PluginVersion.V1;
+
+
 
         public override void Init(AthameApplication application, PluginContext pluginContext)
         {
