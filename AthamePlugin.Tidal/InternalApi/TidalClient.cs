@@ -138,48 +138,48 @@ namespace AthamePlugin.Tidal.InternalApi
             UpdateClient();
         }
 
-        public async Task<Track> GetTrackAsync(int id)
+        public async Task<TidalTrack> GetTrackAsync(int id)
         {
-            return await GetAsync<Track>($"tracks/{id}");
+            return await GetAsync<TidalTrack>($"tracks/{id}");
         }
 
-        public async Task<Album> GetAlbumAsync(int id)
+        public async Task<TidalAlbum> GetAlbumAsync(int id)
         {
-            return await GetAsync<Album>($"albums/{id}");
+            return await GetAsync<TidalAlbum>($"albums/{id}");
         }
 
-        public async Task<PaginatedList<Track>> GetAlbumItemsAsync(int id, PageManager<Track> pageManager = null)
+        public async Task<PaginatedList<TidalTrack>> GetAlbumItemsAsync(int id, PageManager<TidalTrack> pageManager = null)
         {
-            return await GetAsync<PaginatedList<Track>>($"albums/{id}/items", CreateOffsetAndLimitParams(pageManager));
+            return await GetAsync<PaginatedList<TidalTrack>>($"albums/{id}/items", CreateOffsetAndLimitParams(pageManager));
         }
 
-        public async Task<Artist> GetArtistAsync(int id)
+        public async Task<TidalArtist> GetArtistAsync(int id)
         {
-            return await GetAsync<Artist>($"artists/{id}");
+            return await GetAsync<TidalArtist>($"artists/{id}");
         }
 
-        public async Task<PaginatedList<Track>> GetArtistTopTracksAsync(int id, PageManager<Track> pageManager = null)
+        public async Task<PaginatedList<TidalTrack>> GetArtistTopTracksAsync(int id, PageManager<TidalTrack> pageManager = null)
         {
             return
-                await GetAsync<PaginatedList<Track>>($"artists/{id}/toptracks", CreateOffsetAndLimitParams(pageManager));
+                await GetAsync<PaginatedList<TidalTrack>>($"artists/{id}/toptracks", CreateOffsetAndLimitParams(pageManager));
         }
 
-        public async Task<PaginatedList<Album>> GetArtistAlbumsAsync(int id, PageManager<Album> pageManager = null)
+        public async Task<PaginatedList<TidalAlbum>> GetArtistAlbumsAsync(int id, PageManager<TidalAlbum> pageManager = null)
         {
-            return await GetAsync<PaginatedList<Album>>($"artists/{id}/albums", CreateOffsetAndLimitParams(pageManager));
+            return await GetAsync<PaginatedList<TidalAlbum>>($"artists/{id}/albums", CreateOffsetAndLimitParams(pageManager));
         }
 
-        public async Task<PaginatedList<Album>> GetArtistEpsAndSinglesAsync(int id,
-            PageManager<Album> pageManager = null)
+        public async Task<PaginatedList<TidalAlbum>> GetArtistEpsAndSinglesAsync(int id,
+            PageManager<TidalAlbum> pageManager = null)
         {
             var qsParams = CreateOffsetAndLimitParams(pageManager);
             qsParams.Add(new KeyValuePair<string, string>("filter", "EPSANDSINGLES"));
-            return await GetAsync<PaginatedList<Album>>($"artists/{id}/albums", qsParams);
+            return await GetAsync<PaginatedList<TidalAlbum>>($"artists/{id}/albums", qsParams);
         }
 
-        public async Task<Playlist> GetPlaylistAsync(string uuid)
+        public async Task<TidalPlaylist> GetPlaylistAsync(string uuid)
         {
-            return await GetAsync<Playlist>($"playlists/{uuid}");
+            return await GetAsync<TidalPlaylist>($"playlists/{uuid}");
         }
 
 

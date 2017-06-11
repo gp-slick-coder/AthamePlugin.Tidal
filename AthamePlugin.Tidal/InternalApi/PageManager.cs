@@ -7,31 +7,21 @@ using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal.InternalApi
 {
-    public class PageManager<T>
+    public abstract class PageManager<T>
     {
-        public PageManager(int limit)
+        protected PageManager(int itemsPerPage)
         {
-            Limit = limit;
+            ItemsPerPage = itemsPerPage;
         }
 
         public List<T> AllItems { get; set; }
 
-        public int Limit { get; set; }
+        public int ItemsPerPage { get; }
 
-        public int NextOffset { get; set; }
+        public int TotalNumberOfItems { get; set; }
 
-        public int TotalItems { get; set; }
+        public PaginatedList<T> LastPageRequested { get; set; }
 
-        public void Append(PaginatedList<T> page)
-        {
-            Increment(page);
-            AllItems.AddRange(page.Items);
-        }
-
-        public void Increment(PaginatedList<T> page)
-        {
-            TotalItems = page.TotalNumberOfItems;
-            NextOffset += page.Limit;
-        }
+        public abstract Task<PaginatedList<T>> LoadNextPageAsync();
     }
 }

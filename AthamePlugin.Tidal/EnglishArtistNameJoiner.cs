@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OpenTidl.Models;
+using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal
 {
@@ -17,9 +17,6 @@ namespace AthamePlugin.Tidal
         private const string LastTwoItemsJoin = " & ";
         private const string Joiner = ", ";
         private const string FeaturingWord = "feat.";
-
-        public const string ArtistMain = "MAIN";
-        public const string ArtistFeatured = "FEATURED";
 
         public static string JoinArtistNames(string[] artistNames)
         {
@@ -52,23 +49,23 @@ namespace AthamePlugin.Tidal
             return $"({FeaturingWord} {JoinArtistNames(artistNames)})";
         }
 
-        public static bool DoesTitleContainArtistString(TrackModel track)
+        public static bool DoesTitleContainArtistString(TidalTrack track)
         {
             var featuringArtists = (from a in track.Artists
-                where a.Type == ArtistFeatured
+                where a.Type == ArtistRole.Featuring
                 select a.Name).ToArray();
             var artistString = JoinFeaturingArtists(featuringArtists);
             return track.Title.IndexOf(artistString, StringComparison.OrdinalIgnoreCase) > -1;
         }
 
-        public static string CreateArtistString(TrackModel track)
+        public static string CreateArtistString(TidalTrack track)
         {
             var mainArtists = new List<string>();
             var featuringArtists = new List<string>();
 
             foreach (var artist in track.Artists)
             {
-                if (artist.Type == ArtistMain)
+                if (artist.Type == ArtistRole.Main)
                 {
                     mainArtists.Add(artist.Name);
                 }

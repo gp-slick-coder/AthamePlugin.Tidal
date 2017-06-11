@@ -6,17 +6,12 @@ using System.Windows.Forms;
 using Athame.PluginAPI;
 using Athame.PluginAPI.Downloader;
 using Athame.PluginAPI.Service;
-using OpenTidl;
-using OpenTidl.Enums;
-using OpenTidl.Methods;
-using OpenTidl.Models;
-using OpenTidl.Transport;
 
 namespace AthamePlugin.Tidal
 {
     public class TidalService : MusicService, IUsernamePasswordAuthenticationAsync
     {
-        public override int ApiVersion => 1;
+        public override int ApiVersion => 2;
 
         public override PluginInfo Info => new PluginInfo
         {
@@ -26,8 +21,6 @@ namespace AthamePlugin.Tidal
             Website = new Uri("https://svbnet.co")
         };
 
-        private readonly OpenTidlClient client;
-        private OpenTidlSession session;
         private TidalServiceSettings settings = new TidalServiceSettings();
         private const string TidalWebDomain = "listen.tidal.com";
 
@@ -51,23 +44,7 @@ namespace AthamePlugin.Tidal
             };
             // Only use first artist name and picture for now
             t.Artist = CreateArtist(tidalTrack.Artists, tidalTrack.Artist);
-            if (!String.IsNullOrEmpty(tidalTrack.Version))
-            {
-                if (settings.AppendVersionToTrackTitle)
-                {
-                    if (settings.DontAppendAlbumVersion)
-                    {
-                        if (!tidalTrack.Version.Contains(albumVersion))
-                        {
-                            t.Title += " (" + tidalTrack.Version + ")";
-                        }
-                    }
-                    else
-                    {
-                        t.Title += " (" + tidalTrack.Version + ")";
-                    }
-                }
-            }
+
             // If the featured artists aren't already in the title, append them there
             if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(tidalTrack))
             {

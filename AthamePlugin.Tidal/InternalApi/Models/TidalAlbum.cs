@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Athame.PluginAPI.Service;
 using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    public class Album
+    public class TidalAlbum : Album
     {
 
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public new string Title { get; set; }
 
         [JsonProperty("duration")]
         [JsonConverter(typeof(SecondsToDurationConverter))]
-        public TimeSpan Duration { get; set; }
+        public new TimeSpan Duration { get; set; }
 
         [JsonProperty("streamReady")]
         public bool StreamReady { get; set; }
@@ -48,7 +49,24 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string Copyright { get; set; }
 
         [JsonProperty("type")]
-        public AlbumType Type { get; set; }
+        public TidalAlbumType TidalAlbumType { get; set; }
+
+        public new AlbumType Type
+        {
+            get
+            {
+                switch (TidalAlbumType)
+                {
+                    case TidalAlbumType.Album:
+                        return AlbumType.Album;
+                    case TidalAlbumType.Ep:
+                        return AlbumType.EP;
+                    case TidalAlbumType.Single:
+                        return AlbumType.Single;
+                }
+                return AlbumType.Album;
+            }
+        }
 
         [JsonProperty("version")]
         public string Version { get; set; }
@@ -75,10 +93,18 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string AudioQuality { get; set; }
 
         [JsonProperty("artist")]
-        public FeaturedArtist Artist { get; set; }
+        public FeaturedArtist TidalArtist { get; set; }
+
+        private Artist artist;
+
+        public new Artist Artist => artist ?? (artist = NameHelpers.CreateMainArtist(Artists, TidalArtist));
 
         [JsonProperty("artists")]
         public IList<FeaturedArtist> Artists { get; set; }
+
+        internal List<TidalTrack> TidalTracks { get; set; }
+
+        public new List<Track> Tracks { get; set; }
 
     }
 }

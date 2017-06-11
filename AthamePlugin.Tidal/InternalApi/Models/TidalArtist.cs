@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    public class Artist
+    public class TidalArtist
     {
 
         [JsonProperty("id")]

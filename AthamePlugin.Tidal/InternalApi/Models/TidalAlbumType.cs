@@ -10,7 +10,7 @@ using Newtonsoft.Json.Converters;
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum AlbumType
+    public enum TidalAlbumType
     {
         [EnumMember(Value = "SINGLE")]
         Single,

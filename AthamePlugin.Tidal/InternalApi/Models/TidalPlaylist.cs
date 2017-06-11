@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    public class Playlist
+    public class TidalPlaylist
     {
 
         [JsonProperty("uuid")]
@@ -23,7 +23,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public int NumberOfVideos { get; set; }
 
         [JsonProperty("creator")]
-        public Artist Creator { get; set; }
+        public TidalArtist Creator { get; set; }
 
         [JsonProperty("description")]
         public string Description { get; set; }

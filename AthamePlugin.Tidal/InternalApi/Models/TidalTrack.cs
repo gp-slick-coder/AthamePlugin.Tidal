@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    public class Track
+    public class TidalTrack
     {
 
         [JsonProperty("id")]
@@ -75,7 +75,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public IList<FeaturedArtist> Artists { get; set; }
 
         [JsonProperty("album")]
-        public Album Album { get; set; }
+        public TidalAlbum Album { get; set; }
         
     }
 }

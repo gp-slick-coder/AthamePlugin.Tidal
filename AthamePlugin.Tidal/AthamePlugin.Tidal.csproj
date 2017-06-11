@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Athame.PluginAPI">
-      <HintPath>..\..\Athame\Athame.PluginAPI\bin\Release\Athame.PluginAPI.dll</HintPath>
+    <Reference Include="Athame.PluginAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Athame\Athame.PluginAPI\bin\Debug\Athame.PluginAPI.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -53,15 +54,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnglishArtistNameJoiner.cs" />
-    <Compile Include="InternalApi\Models\Album.cs" />
+    <Compile Include="InternalApi\Models\TidalAlbum.cs" />
     <Compile Include="InternalApi\Models\FeaturedArtist.cs" />
-    <Compile Include="InternalApi\Models\AlbumType.cs" />
-    <Compile Include="InternalApi\Models\Artist.cs" />
+    <Compile Include="InternalApi\Models\TidalAlbumType.cs" />
+    <Compile Include="InternalApi\Models\TidalArtist.cs" />
     <Compile Include="InternalApi\Models\ArtistRole.cs" />
     <Compile Include="InternalApi\Models\PaginatedList.cs" />
-    <Compile Include="InternalApi\Models\Playlist.cs" />
+    <Compile Include="InternalApi\Models\TidalPlaylist.cs" />
     <Compile Include="InternalApi\Models\StreamingQuality.cs" />
-    <Compile Include="InternalApi\Models\Track.cs" />
+    <Compile Include="InternalApi\Models\TidalTrack.cs" />
+    <Compile Include="InternalApi\NameHelpers.cs" />
+    <Compile Include="InternalApi\PagedCalls\AlbumItemsPageManager.cs" />
     <Compile Include="InternalApi\PageManager.cs" />
     <Compile Include="InternalApi\PictureUrlResolver.cs" />
     <Compile Include="InternalApi\SecondsToDurationConverter.cs" />
