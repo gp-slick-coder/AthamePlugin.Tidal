@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal
 {
@@ -18,9 +19,9 @@ namespace AthamePlugin.Tidal
             this.settings = settings;
             var rbem = new RadioButtonEnumMapper();
 
-            rbem.Assign(qLosslessRadioButton, (int)SoundQuality.LOSSLESS);
-            rbem.Assign(qHighRadioButton, (int)SoundQuality.HIGH);
-            rbem.Assign(qLowRadioButton, (int)SoundQuality.LOW);
+            rbem.Assign(qLosslessRadioButton, (int)StreamingQuality.Lossless);
+            rbem.Assign(qHighRadioButton, (int)StreamingQuality.High);
+            rbem.Assign(qLowRadioButton, (int)StreamingQuality.Low);
 
             rbem.Select((int)settings.StreamQuality);
             appendVerCheckBox.Checked = settings.AppendVersionToTrackTitle;
@@ -28,7 +29,7 @@ namespace AthamePlugin.Tidal
             unlessAlbumVersionCheckBox.Checked = settings.DontAppendAlbumVersion;
             useOfflineUrlEndpointCheckbox.Checked = settings.UseOfflineUrl;
 
-            rbem.ValueChanged += (sender, args) => settings.StreamQuality = (SoundQuality)rbem.Value;
+            rbem.ValueChanged += (sender, args) => settings.StreamQuality = (StreamingQuality)rbem.Value;
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Athame.PluginAPI;
@@ -45,7 +46,9 @@ namespace AthamePlugin.Tidal
 
         public override async Task<TrackFile> GetDownloadableTrackAsync(Track track)
         {
-            var response = await client.GetOfflineUrlAsync(Int32.Parse(track.Id), settings.StreamQuality);
+            var response = settings.UseOfflineUrl
+                ? await client.GetOfflineUrlAsync(Int32.Parse(track.Id), settings.StreamQuality)
+                : await client.GetStreamUrlAsync(Int32.Parse(track.Id), settings.StreamQuality);
             var result = new TrackFile {DownloadUri = new Uri(response.Url), Track = track};
             // We can assume the MIME type and bitrate from the **returned** sound quality
             // It is unwise to use the stream quality stored in settings as users with lossless
@@ -75,12 +78,14 @@ namespace AthamePlugin.Tidal
         public override async Task<Playlist> GetPlaylistAsync(string playlistId)
         {
             var playlist = await client.GetPlaylistAsync(playlistId);
-            var tracks = await session.GetPlaylistTracks(playlistId);
-            
+            var itemsPages = client.GetPlaylistTracks(playlistId);
+            await itemsPages.LoadAllPagesAsync();
+
             return new Playlist
             {
                 Title = playlist.Title,
-                Tracks = (from t in tracks.Items select CreateTrack(t)).ToList()
+                PlaylistPicture = new PlaylistPicture(playlist.Image),
+                Tracks = (from t in itemsPages.AllItems select t.CreateAthameTrack()).ToList()
             };
         }
 
@@ -128,19 +133,20 @@ namespace AthamePlugin.Tidal
 
         public override async Task<Album> GetAlbumAsync(string albumId, bool withTracks)
         {
-            var tidalAlbum = await client.GetAlbum(Int32.Parse(albumId));
+            var tidalAlbum = await client.GetAlbumAsync(Int32.Parse(albumId));
             if (!withTracks)
             {
-                return CreateAlbum(tidalAlbum);
+                return tidalAlbum.CreateAthameAlbum();
             }
-            var tidalTracks = await client.GetAlbumTracks(Int32.Parse(albumId));
-            var cmAlbum = CreateAlbum(tidalAlbum);
+            var tidalTracksPage = client.GetAlbumItems(Int32.Parse(albumId));
+            await tidalTracksPage.LoadAllPagesAsync();
+            var cmAlbum = tidalAlbum.CreateAthameAlbum();
             var cmTracks = new List<Track>();
-            foreach (var track in tidalTracks.Items)
+            foreach (var track in tidalTracksPage.AllItems)
             {
-                var cmTrack = CreateTrack(track);
+                var cmTrack = track.CreateAthameTrack();
                 cmTrack.Album = cmAlbum;
-                if (tidalAlbum.ReleaseDate != null) cmTrack.Year = tidalAlbum.ReleaseDate.Value.Year;
+                cmTrack.Year = tidalAlbum.ReleaseDate.Year;
                 cmTracks.Add(cmTrack);
             }
             cmAlbum.Tracks = cmTracks;
@@ -149,20 +155,22 @@ namespace AthamePlugin.Tidal
 
         public override async Task<Track> GetTrackAsync(string trackId)
         {
-            var track = await client.GetTrack(Int32.Parse(trackId));
-            var album = await client.GetAlbum(track.Album.Id);
-            return CreateTrack(album, track);
+            var track = await client.GetTrackAsync(Int32.Parse(trackId));
+            var album = await client.GetAlbumAsync(track.Album.Id);
+            var athameTrack = track.CreateAthameTrack();
+            athameTrack.Album = album.CreateAthameAlbum();
+            return athameTrack;
         }
 
         public void Reset()
         {
+            client = new TidalClient();
             Account = null;
             settings.User = null;
-            session = null;
         }
 
         public AccountInfo Account { get; private set; }
-        public bool IsAuthenticated => session != null;
+        public bool IsAuthenticated => client.Session != null;
 
         public override Control GetSettingsControl()
         {
@@ -197,39 +205,40 @@ namespace AthamePlugin.Tidal
             
         }
 
-        public bool HasSavedSession => settings.SessionToken != null;
+        public bool HasSavedSession => settings.Session != null;
 
         public async Task<bool> RestoreAsync()
         {
-            if (settings.SessionToken == null) return false;
+            if (settings.Session == null) return false;
             try
             {
-                session = await client.RestoreSession(settings.SessionToken);
+
+                client.Session = settings.Session;
                 Account = AccountInfoFromUser(settings.User);
             }
-            catch (OpenTidlException)
+            catch (TidalException)
             {
                 return false;
             }
-            return session != null;
+            return client.Session != null;
         }
 
         public async Task<bool> AuthenticateAsync(string username, string password, bool rememberUser)
         {
             try
             {
-                session = await client.LoginWithUsername(username, password);
+                await client.LoginWithUsernameAsync(username, password);
             }
-            catch (OpenTidlException)
+            catch (TidalException)
             {
                 return false;
             }
-            var user = await session.GetUser();
+            var user = await client.GetUserAsync(client.Session.UserId);
             Account = AccountInfoFromUser(user);
             if (rememberUser)
             {
                 settings.User = user;
-                settings.SessionToken = session.SessionId;
+                settings.Session = client.Session;
             }
             return true;
         }

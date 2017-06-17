@@ -1,4 +1,5 @@
-﻿using AthamePlugin.Tidal.InternalApi.Models;
+﻿using AthamePlugin.Tidal.InternalApi;
+using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal
 {
@@ -8,7 +9,7 @@ namespace AthamePlugin.Tidal
         public bool AppendVersionToTrackTitle { get; set; }
         public bool DontAppendAlbumVersion { get; set; }
         public bool UseOfflineUrl { get; set; }
-        public string SessionToken { get; set; }
+        public TidalSession Session { get; set; }
         public TidalUser User { get; set; }
         public TidalServiceSettings()
         {

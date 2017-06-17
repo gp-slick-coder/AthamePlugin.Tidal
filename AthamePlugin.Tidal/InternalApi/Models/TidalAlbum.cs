@@ -10,14 +10,14 @@ namespace AthamePlugin.Tidal.InternalApi.Models
     {
 
         [JsonProperty("id")]
-        public new int Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty("title")]
-        public new string Title { get; set; }
+        public string Title { get; set; }
 
         [JsonProperty("duration")]
         [JsonConverter(typeof(SecondsToDurationConverter))]
-        public new TimeSpan Duration { get; set; }
+        public TimeSpan Duration { get; set; }
 
         [JsonProperty("streamReady")]
         public bool StreamReady { get; set; }

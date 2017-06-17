@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Web;
 using AthamePlugin.Tidal.InternalApi.Models;
@@ -22,20 +23,34 @@ namespace AthamePlugin.Tidal.InternalApi
         private readonly List<KeyValuePair<string, string>> globalQuery = new List<KeyValuePair<string, string>>();
         private KeyValuePair<string, string> countryCodeParam;
 
-        public TidalSession Session { get; set; }
+        public int ItemsPerPage { get; set; }
+        private TidalSession session;
+
+        public TidalSession Session
+        {
+            get
+            {
+                return session;
+            }
+            set
+            {
+                session = value;
+                UpdateClient();
+            }
+        }
 
         private void UpdateClient()
         {
             // Set country code
             if (countryCodeParam.Key != null) globalQuery.Remove(countryCodeParam);
-            countryCodeParam = new KeyValuePair<string, string>("countryCode", Session.CountryCode);
+            countryCodeParam = new KeyValuePair<string, string>("countryCode", session.CountryCode);
             globalQuery.Add(countryCodeParam);
 
             // Set session or token headers
-            if (Session.SessionId != null)
+            if (session.SessionId != null)
             {
                 httpClient.DefaultRequestHeaders.Remove(HeaderTidalToken);
-                httpClient.DefaultRequestHeaders.Add(HeaderTidalSession, Session.SessionId);
+                httpClient.DefaultRequestHeaders.Add(HeaderTidalSession, session.SessionId);
             }
             else
             {
@@ -46,20 +61,21 @@ namespace AthamePlugin.Tidal.InternalApi
 
         private void Init()
         {
+            ItemsPerPage = 100;
             httpClient.BaseAddress = new Uri(ApiRootUrl);
             UpdateClient();
         }
 
         public TidalClient()
         {
-            Session = new TidalSession {CountryCode = "WW"};
+            session = new TidalSession {CountryCode = "WW"};
             Init();
         }
 
         public TidalClient(TidalSession savedSession)
         {
             
-            Session = savedSession;
+            session = savedSession;
             Init();
         }
 
@@ -83,8 +99,6 @@ namespace AthamePlugin.Tidal.InternalApi
             var qs = CreateQueryString(queryString);
             return path + "?" + qs;
         }
-
-        
 
         private T DeserializeOrThrow<T>(JObject result)
         {
@@ -119,7 +133,7 @@ namespace AthamePlugin.Tidal.InternalApi
 
         public async Task LoginWithUsernameAsync(string username, string password)
         {
-            Session = await PostAsync<TidalSession>("login/username", null, new List<KeyValuePair<string, string>>
+            session = await PostAsync<TidalSession>("login/username", null, new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("username", username),
                 new KeyValuePair<string, string>("password", password),
@@ -138,9 +152,9 @@ namespace AthamePlugin.Tidal.InternalApi
             return await GetAsync<TidalAlbum>($"albums/{id}");
         }
 
-        public PageManager<TidalTrack> GetAlbumItems(int id, PageManager<TidalTrack> pageManager = null)
+        public PageManager<TidalTrack> GetAlbumItems(int id)
         {
-            return new PageManager<TidalTrack>(this, $"albums/{id}/items", 100);
+            return new PageManager<TidalTrack>(this, $"albums/{id}/items", ItemsPerPage);
         }
 
         public async Task<TidalArtist> GetArtistAsync(int id)
@@ -148,28 +162,37 @@ namespace AthamePlugin.Tidal.InternalApi
             return await GetAsync<TidalArtist>($"artists/{id}");
         }
 
-        public async Task<PaginatedList<TidalTrack>> GetArtistTopTracksAsync(int id, PageManager<TidalTrack> pageManager = null)
+        public PageManager<TidalTrack> GetArtistTopTracks(int id)
         {
-            return
-                await GetAsync<PaginatedList<TidalTrack>>($"artists/{id}/toptracks", CreateOffsetAndLimitParams(pageManager));
+            return new PageManager<TidalTrack>(this, $"artists/{id}/toptracks", ItemsPerPage);
         }
 
-        public async Task<PaginatedList<TidalAlbum>> GetArtistAlbumsAsync(int id, PageManager<TidalAlbum> pageManager = null)
+        public PageManager<TidalAlbum> GetArtistAlbums(int id)
         {
-            return await GetAsync<PaginatedList<TidalAlbum>>($"artists/{id}/albums", CreateOffsetAndLimitParams(pageManager));
+            return new PageManager<TidalAlbum>(this, $"artists/{id}/albums", ItemsPerPage);
         }
 
-        public async Task<PaginatedList<TidalAlbum>> GetArtistEpsAndSinglesAsync(int id,
-            PageManager<TidalAlbum> pageManager = null)
+        public PageManager<TidalAlbum> GetArtistEpsAndSingles(int id)
         {
-            var qsParams = CreateOffsetAndLimitParams(pageManager);
-            qsParams.Add(new KeyValuePair<string, string>("filter", "EPSANDSINGLES"));
-            return await GetAsync<PaginatedList<TidalAlbum>>($"artists/{id}/albums", qsParams);
+            var qsParams = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("filter", "EPSANDSINGLES")
+            };
+            return new PageManager<TidalAlbum>(this, $"artists/{id}/albums", ItemsPerPage, qsParams);
         }
 
         public async Task<TidalPlaylist> GetPlaylistAsync(string uuid)
         {
             return await GetAsync<TidalPlaylist>($"playlists/{uuid}");
+        }
+
+        public PlaylistPageManager GetPlaylistTracks(string uuid)
+        {
+            return new PlaylistPageManager(this, $"playlists/{uuid}/items", ItemsPerPage, new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("order", "INDEX"),
+                new KeyValuePair<string, string>("orderDirection", "ASC")
+            });
         }
 
         public async Task<TidalUser> GetUserAsync(int id)
