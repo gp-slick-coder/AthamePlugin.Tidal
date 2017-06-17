@@ -1,17 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal.InternalApi
 {
-    public abstract class PageManager<T>
+    public class PageManager<T>
     {
-        protected PageManager(int itemsPerPage)
+        private readonly TidalClient client;
+        private readonly string path;
+
+        internal PageManager(TidalClient client, string path, int itemsPerPage)
         {
             ItemsPerPage = itemsPerPage;
+            this.client = client;
+            this.path = path;
+        }
+
+        private List<KeyValuePair<string, string>> CreateOffsetAndLimitParams()
+        {
+            var limit = 100;
+            var offset = 0;
+
+            limit = ItemsPerPage;
+            if (LastPageRequested != null)
+            {
+                offset = LastPageRequested.Offset + limit;
+            }
+
+            return new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("limit", limit.ToString()),
+                new KeyValuePair<string, string>("offset", offset.ToString())
+            };
         }
 
         public List<T> AllItems { get; set; }
@@ -22,6 +42,12 @@ namespace AthamePlugin.Tidal.InternalApi
 
         public PaginatedList<T> LastPageRequested { get; set; }
 
-        public abstract Task<PaginatedList<T>> LoadNextPageAsync();
+        public async Task<PaginatedList<T>> LoadNextPageAsync()
+        {
+            var pageParams = CreateOffsetAndLimitParams();
+            LastPageRequested = await client.GetAsync<PaginatedList<T>>(path, pageParams);
+            AllItems.AddRange(LastPageRequested.Items);
+            return LastPageRequested;
+        }
     }
 }

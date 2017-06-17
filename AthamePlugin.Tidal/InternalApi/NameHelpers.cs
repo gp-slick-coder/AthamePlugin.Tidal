@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Athame.PluginAPI.Service;
 using AthamePlugin.Tidal.InternalApi.Models;
 
@@ -10,6 +8,8 @@ namespace AthamePlugin.Tidal.InternalApi
 {
     internal static class NameHelpers
     {
+        private const string AlbumVersion = "Album Version";
+
         internal static Artist CreateMainArtist(IList<FeaturedArtist> artists, FeaturedArtist defaultArtist)
         {
             return new Artist
@@ -23,24 +23,20 @@ namespace AthamePlugin.Tidal.InternalApi
 
         internal static string CreateTrackTitle(TidalServiceSettings settings, TidalTrack tidalTrack)
         {
-            
-            if (!String.IsNullOrEmpty(tidalTrack.Version))
+            if (String.IsNullOrEmpty(tidalTrack.Version)) return tidalTrack.Title;
+            if (!settings.AppendVersionToTrackTitle) return tidalTrack.Title;
+            if (settings.DontAppendAlbumVersion)
             {
-                if (settings.AppendVersionToTrackTitle)
+                if (tidalTrack.Version.IndexOf(AlbumVersion, StringComparison.OrdinalIgnoreCase) == -1)
                 {
-                    if (settings.DontAppendAlbumVersion)
-                    {
-                        if (!tidalTrack.Version.Contains(albumVersion))
-                        {
-                            t.Title += " (" + tidalTrack.Version + ")";
-                        }
-                    }
-                    else
-                    {
-                        t.Title += " (" + tidalTrack.Version + ")";
-                    }
+                    return tidalTrack.Title + " (" + tidalTrack.Version + ")";
                 }
             }
+            else
+            {
+                return tidalTrack.Title + " (" + tidalTrack.Version + ")";
+            }
+            return tidalTrack.Title;
         }
     }
 }

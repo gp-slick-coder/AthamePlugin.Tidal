@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Athame.PluginAPI.Service;
 using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
@@ -76,6 +75,37 @@ namespace AthamePlugin.Tidal.InternalApi.Models
 
         [JsonProperty("album")]
         public TidalAlbum Album { get; set; }
-        
+
+        internal Track CreateAthameTrack()
+        {
+            // Always put main artists in the artist field
+            var t = new Track
+            {
+                DiscNumber = VolumeNumber,
+                TrackNumber = TrackNumber,
+                Title = Title,
+                Id = Id.ToString(),
+                IsDownloadable = AllowStreaming
+
+            };
+            
+            // Only use first artist name and picture for now
+            t.Artist = NameHelpers.CreateMainArtist(Artists, Artist);
+
+            // If the featured artists aren't already in the title, append them there
+            if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(this))
+            {
+                var nonMainArtists = (from artist in Artists
+                    where artist.Type != ArtistRole.Main
+                    select artist.Name).ToArray();
+                if (nonMainArtists.Length > 0)
+                {
+                    t.Title += " " + EnglishArtistNameJoiner.JoinFeaturingArtists(nonMainArtists);
+                }
+            }
+            t.Album = Album.CreateAthameAlbum();
+            return t;
+        }
+
     }
 }

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using AthamePlugin.Tidal.InternalApi.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AthamePlugin.Tidal.InternalApi
@@ -87,14 +84,7 @@ namespace AthamePlugin.Tidal.InternalApi
             return path + "?" + qs;
         }
 
-        private List<KeyValuePair<string, string>> CreateOffsetAndLimitParams<T>(PageManager<T> pageManager = null)
-        {
-            return new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>("limit", pageManager?.Limit.ToString() ?? 100.ToString()),
-                new KeyValuePair<string, string>("offset", pageManager?.NextOffset.ToString() ?? 0.ToString())
-            };
-        }
+        
 
         private T DeserializeOrThrow<T>(JObject result)
         {
@@ -110,13 +100,13 @@ namespace AthamePlugin.Tidal.InternalApi
             return result.ToObject<T>();
         }
 
-        private async Task<T> GetAsync<T>(string path, List<KeyValuePair<string, string>> queryString = null)
+        internal async Task<T> GetAsync<T>(string path, List<KeyValuePair<string, string>> queryString = null)
         {
             var result = JObject.Parse(await httpClient.GetStringAsync(CreatePathWithQueryString(path, queryString)));
             return DeserializeOrThrow<T>(result);
         }
 
-        private async Task<T> PostAsync<T>(string path, List<KeyValuePair<string, string>> queryString = null, List<KeyValuePair<string, string>> formParams = null)
+        internal async Task<T> PostAsync<T>(string path, List<KeyValuePair<string, string>> queryString = null, List<KeyValuePair<string, string>> formParams = null)
         {
             if (formParams == null) formParams = new List<KeyValuePair<string, string>>();
             var response =
@@ -148,9 +138,9 @@ namespace AthamePlugin.Tidal.InternalApi
             return await GetAsync<TidalAlbum>($"albums/{id}");
         }
 
-        public async Task<PaginatedList<TidalTrack>> GetAlbumItemsAsync(int id, PageManager<TidalTrack> pageManager = null)
+        public PageManager<TidalTrack> GetAlbumItems(int id, PageManager<TidalTrack> pageManager = null)
         {
-            return await GetAsync<PaginatedList<TidalTrack>>($"albums/{id}/items", CreateOffsetAndLimitParams(pageManager));
+            return new PageManager<TidalTrack>(this, $"albums/{id}/items", 100);
         }
 
         public async Task<TidalArtist> GetArtistAsync(int id)
@@ -180,6 +170,28 @@ namespace AthamePlugin.Tidal.InternalApi
         public async Task<TidalPlaylist> GetPlaylistAsync(string uuid)
         {
             return await GetAsync<TidalPlaylist>($"playlists/{uuid}");
+        }
+
+        public async Task<TidalUser> GetUserAsync(int id)
+        {
+            return await GetAsync<TidalUser>($"users/{id}");
+        }
+
+        public async Task<TidalStream> GetStreamUrlAsync(int trackId, StreamingQuality quality)
+        {
+            
+            return await GetAsync<TidalStream>($"tracks/{trackId}/streamUrl", new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("soundQuality", JToken.FromObject(quality).ToString())
+            });
+        }
+
+        public async Task<TidalStream> GetOfflineUrlAsync(int trackId, StreamingQuality quality)
+        {
+            return await GetAsync<TidalStream>($"tracks/{trackId}/offlineUrl", new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("soundQuality", JToken.FromObject(quality).ToString())
+            });
         }
 
 

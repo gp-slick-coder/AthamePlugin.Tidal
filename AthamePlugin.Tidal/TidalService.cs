@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Athame.PluginAPI;
 using Athame.PluginAPI.Downloader;
 using Athame.PluginAPI.Service;
+using AthamePlugin.Tidal.InternalApi;
+using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal
 {
@@ -21,94 +22,16 @@ namespace AthamePlugin.Tidal
             Website = new Uri("https://svbnet.co")
         };
 
+        private TidalClient client;
         private TidalServiceSettings settings = new TidalServiceSettings();
         private const string TidalWebDomain = "listen.tidal.com";
 
         public TidalService()
         {
-            client = new OpenTidlClient(ClientConfiguration.Default);
+            client = new TidalClient();
         }
 
-        private Track CreateTrack(TrackModel tidalTrack)
-        {
-            const string albumVersion = "Album Version";
-            // Always put main artists in the artist field
-            var t = new Track
-            {
-                DiscNumber = tidalTrack.VolumeNumber,
-                TrackNumber = tidalTrack.TrackNumber,
-                Title = tidalTrack.Title,
-                Id = tidalTrack.Id.ToString(),
-                IsDownloadable = tidalTrack.AllowStreaming
-
-            };
-            // Only use first artist name and picture for now
-            t.Artist = CreateArtist(tidalTrack.Artists, tidalTrack.Artist);
-
-            // If the featured artists aren't already in the title, append them there
-            if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(tidalTrack))
-            {
-                var nonMainArtists = (from artist in tidalTrack.Artists
-                    where artist.Type != EnglishArtistNameJoiner.ArtistMain
-                    select artist.Name).ToArray();
-                if (nonMainArtists.Length > 0)
-                {
-                    t.Title += " " + EnglishArtistNameJoiner.JoinFeaturingArtists(nonMainArtists);
-                }
-            }
-            t.Album = CreateAlbum(tidalTrack.Album);
-            return t;
-        }
-
-        private Track CreateTrack(AlbumModel tidalAlbum, TrackModel tidalTrack)
-        {
-            var t = CreateTrack(tidalTrack);
-            if (tidalAlbum.ReleaseDate != null) t.Year = tidalAlbum.ReleaseDate.Value.Year;
-            t.Album = CreateAlbum(tidalAlbum);
-            return t;
-        }
-
-        private Album CreateAlbum(AlbumModel album, List<TrackModel> tracks)
-        {
-            var a = CreateAlbum(album);
-            a.Tracks = new List<Track>(from t in tracks select CreateTrack(album, t));
-            return a;
-        }
-
-        private const int AlbumArtSize = 1280;
-        private const string AlbumArtUrlFormat = "https://resources.tidal.com/images/{0}/{1}x{1}.jpg";
-
-        private Artist CreateArtist(ArtistModel[] artists, ArtistModel defaultArtist)
-        {
-            return new Artist
-            {
-                Id = defaultArtist.Id.ToString(),
-                Name = EnglishArtistNameJoiner.JoinArtistNames((from artist in artists
-                                                                where artist.Type == EnglishArtistNameJoiner.ArtistMain
-                                                                select artist.Name).ToArray())
-            };
-        }
-
-        private Album CreateAlbum(AlbumModel album)
-        {
-            var coverUrl = String.Format(AlbumArtUrlFormat, album.Cover.Replace('-', '/'), AlbumArtSize);
-            var cmAlbum = new Album
-            {
-                Id = album.Id.ToString(),
-                Title = album.Title,
-                CoverUri = new Uri(coverUrl)
-            };
-            // On most calls the Album returned is a "lite" version, with only the properties above
-            // available.
-            if (album.Artist != null)
-            {
-                // Need only main artists
-                cmAlbum.Artist = CreateArtist(album.Artists, album.Artist);
-            }
-            return cmAlbum;
-        }
-
-        private AccountInfo AccountInfoFromUser(UserModel user)
+        private AccountInfo AccountInfoFromUser(TidalUser user)
         {
             return new AccountInfo
             {
@@ -122,28 +45,26 @@ namespace AthamePlugin.Tidal
 
         public override async Task<TrackFile> GetDownloadableTrackAsync(Track track)
         {
-            var response = await session.GetTrackOfflineUrl(Int32.Parse(track.Id), settings.StreamQuality);
+            var response = await client.GetOfflineUrlAsync(Int32.Parse(track.Id), settings.StreamQuality);
             var result = new TrackFile {DownloadUri = new Uri(response.Url), Track = track};
             // We can assume the MIME type and bitrate from the **returned** sound quality
             // It is unwise to use the stream quality stored in settings as users with lossless
             // subscriptions will get lossy streams simply because lossless streams are unavailable
             switch (response.SoundQuality)
             {
-                case SoundQuality.LOW:
+                case StreamingQuality.Low:
                     result.FileType = MediaFileTypes.Mpeg4Audio;
                     result.BitRate = 96 * 1000;
                     break;
-                case SoundQuality.HIGH:
+                case StreamingQuality.High:
                     result.FileType = MediaFileTypes.Mpeg4Audio;
                     result.BitRate = 320 * 1000;
                     break;
-                case SoundQuality.LOSSLESS:
+                case StreamingQuality.HiRes:
+                case StreamingQuality.Lossless:
                     result.FileType = MediaFileTypes.FreeLosslessAudioCodec;
                     // Bitrate doesn't really matter since it's lossless
                     result.BitRate = -1;
-                    break;
-                case SoundQuality.LOSSLESS_HD:
-                    // This seems to be obsolete so I'll just wait and see
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -153,8 +74,9 @@ namespace AthamePlugin.Tidal
 
         public override async Task<Playlist> GetPlaylistAsync(string playlistId)
         {
-            var playlist = await session.GetPlaylist(playlistId);
+            var playlist = await client.GetPlaylistAsync(playlistId);
             var tracks = await session.GetPlaylistTracks(playlistId);
+            
             return new Playlist
             {
                 Title = playlist.Title,

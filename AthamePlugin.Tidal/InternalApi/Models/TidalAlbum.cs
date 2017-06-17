@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Athame.PluginAPI.Service;
 using Newtonsoft.Json;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    public class TidalAlbum : Album
+    public class TidalAlbum
     {
 
         [JsonProperty("id")]
@@ -51,23 +49,6 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         [JsonProperty("type")]
         public TidalAlbumType TidalAlbumType { get; set; }
 
-        public new AlbumType Type
-        {
-            get
-            {
-                switch (TidalAlbumType)
-                {
-                    case TidalAlbumType.Album:
-                        return AlbumType.Album;
-                    case TidalAlbumType.Ep:
-                        return AlbumType.EP;
-                    case TidalAlbumType.Single:
-                        return AlbumType.Single;
-                }
-                return AlbumType.Album;
-            }
-        }
-
         [JsonProperty("version")]
         public string Version { get; set; }
 
@@ -93,18 +74,35 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string AudioQuality { get; set; }
 
         [JsonProperty("artist")]
-        public FeaturedArtist TidalArtist { get; set; }
-
-        private Artist artist;
-
-        public new Artist Artist => artist ?? (artist = NameHelpers.CreateMainArtist(Artists, TidalArtist));
+        public FeaturedArtist Artist { get; set; }
 
         [JsonProperty("artists")]
         public IList<FeaturedArtist> Artists { get; set; }
 
         internal List<TidalTrack> TidalTracks { get; set; }
 
-        public new List<Track> Tracks { get; set; }
+        internal Album CreateAthameAlbum()
+        { 
+            var cmAlbum = new Album
+            {
+                Id = Id.ToString(),
+                Title = Title,
+                CoverPicture = new TidalPicture(Cover),
+                Type = (AlbumType)TidalAlbumType
+            };
+            // On most calls the Album returned is a "lite" version, with only the properties above
+            // available.
+            if (Artist != null)
+            {
+                // Need only main artists
+                cmAlbum.Artist = NameHelpers.CreateMainArtist(Artists, Artist);
+            }
+            if (TidalTracks != null)
+            {
+                cmAlbum.Tracks = (from track in TidalTracks select track.CreateAthameTrack()).ToList();
+            }
+            return cmAlbum;
+        }
 
     }
 }
