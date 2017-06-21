@@ -25,7 +25,8 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string Description { get; set; }
 
         [JsonProperty("duration")]
-        public int Duration { get; set; }
+        [JsonConverter(typeof(SecondsToDurationConverter))]
+        public TimeSpan? Duration { get; set; }
 
         [JsonProperty("lastUpdated")]
         public DateTime LastUpdated { get; set; }

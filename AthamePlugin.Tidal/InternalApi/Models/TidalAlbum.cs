@@ -17,7 +17,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
 
         [JsonProperty("duration")]
         [JsonConverter(typeof(SecondsToDurationConverter))]
-        public TimeSpan Duration { get; set; }
+        public TimeSpan? Duration { get; set; }
 
         [JsonProperty("streamReady")]
         public bool StreamReady { get; set; }
@@ -77,7 +77,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public FeaturedArtist Artist { get; set; }
 
         [JsonProperty("artists")]
-        public IList<FeaturedArtist> Artists { get; set; }
+        public List<FeaturedArtist> Artists { get; set; }
 
         internal List<TidalTrack> TidalTracks { get; set; }
 

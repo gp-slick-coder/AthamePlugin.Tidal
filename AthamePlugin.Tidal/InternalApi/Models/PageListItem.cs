@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
-    internal class PlaylistItemInternal
+    public class PageListItem
     {
         [JsonProperty("item")]
         public JObject Item { get; set; }

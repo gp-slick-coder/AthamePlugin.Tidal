@@ -52,7 +52,7 @@ namespace AthamePlugin.Tidal
         public static bool DoesTitleContainArtistString(TidalTrack track)
         {
             var featuringArtists = (from a in track.Artists
-                where a.Type == ArtistRole.Featuring
+                where a.Type == ArtistRole.Featured
                 select a.Name).ToArray();
             var artistString = JoinFeaturingArtists(featuringArtists);
             return track.Title.IndexOf(artistString, StringComparison.OrdinalIgnoreCase) > -1;

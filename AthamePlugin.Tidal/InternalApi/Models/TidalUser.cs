@@ -37,7 +37,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public string Gender { get; set; }
 
         [JsonProperty("dateOfBirth")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty("facebookUid")]
         public int FacebookUid { get; set; }

@@ -17,7 +17,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
 
         [JsonProperty("duration")]
         [JsonConverter(typeof(SecondsToDurationConverter))]
-        public int Duration { get; set; }
+        public TimeSpan? Duration { get; set; }
 
         [JsonProperty("replayGain")]
         public double ReplayGain { get; set; }
@@ -71,7 +71,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public FeaturedArtist Artist { get; set; }
 
         [JsonProperty("artists")]
-        public IList<FeaturedArtist> Artists { get; set; }
+        public List<FeaturedArtist> Artists { get; set; }
 
         [JsonProperty("album")]
         public TidalAlbum Album { get; set; }
@@ -85,12 +85,12 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 TrackNumber = TrackNumber,
                 Title = Title,
                 Id = Id.ToString(),
-                IsDownloadable = AllowStreaming
-
+                IsDownloadable = AllowStreaming,
+                // Only use first artist name and picture for now
+                Artist = NameHelpers.CreateMainArtist(Artists, Artist)
             };
+
             
-            // Only use first artist name and picture for now
-            t.Artist = NameHelpers.CreateMainArtist(Artists, Artist);
 
             // If the featured artists aren't already in the title, append them there
             if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(this))

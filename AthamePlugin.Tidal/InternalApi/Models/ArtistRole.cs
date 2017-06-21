@@ -9,7 +9,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
     {
         [EnumMember(Value = "MAIN")]
         Main,
-        [EnumMember(Value = "FEATURING")]
-        Featuring
+        [EnumMember(Value = "FEATURED")]
+        Featured
     }
 }

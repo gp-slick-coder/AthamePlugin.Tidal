@@ -15,6 +15,6 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public int TotalNumberOfItems { get; set; }
 
         [JsonProperty("items")]
-        public IList<T> Items { get; set; }
+        public List<T> Items { get; set; }
     }
 }

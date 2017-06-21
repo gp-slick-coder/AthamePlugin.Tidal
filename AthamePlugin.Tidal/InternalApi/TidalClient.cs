@@ -154,7 +154,8 @@ namespace AthamePlugin.Tidal.InternalApi
 
         public PageManager<TidalTrack> GetAlbumItems(int id)
         {
-            return new PageManager<TidalTrack>(this, $"albums/{id}/items", ItemsPerPage);
+            // Seems like Tidal is shifting to the albums/{id}/items endpoint...
+            return new PageManager<TidalTrack>(this, $"albums/{id}/tracks", ItemsPerPage);
         }
 
         public async Task<TidalArtist> GetArtistAsync(int id)

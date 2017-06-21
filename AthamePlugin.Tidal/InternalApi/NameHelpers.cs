@@ -10,7 +10,7 @@ namespace AthamePlugin.Tidal.InternalApi
     {
         private const string AlbumVersion = "Album Version";
 
-        internal static Artist CreateMainArtist(IList<FeaturedArtist> artists, FeaturedArtist defaultArtist)
+        internal static Artist CreateMainArtist(List<FeaturedArtist> artists, FeaturedArtist defaultArtist)
         {
             return new Artist
             {

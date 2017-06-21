@@ -91,10 +91,6 @@ namespace AthamePlugin.Tidal
 
         public override UrlParseResult ParseUrl(Uri url)
         {
-            if (url.Host != TidalWebDomain)
-            {
-                return null;
-            }
             var pathParts = url.LocalPath.Split('/');
             if (pathParts.Length <= 2) return null;
             var ctype = pathParts[1];
@@ -205,7 +201,7 @@ namespace AthamePlugin.Tidal
             
         }
 
-        public bool HasSavedSession => settings.Session.SessionId != null;
+        public bool HasSavedSession => settings.Session?.SessionId != null;
 
         public Task<bool> RestoreAsync()
         {

@@ -23,7 +23,7 @@ namespace AthamePlugin.Tidal.InternalApi
             // This is where we deviate. Since Tidal playlists can contain videos and tracks (and we have no use for videos yet),
             // we use PlaylistItemInternal to represent the playlist item as a JObject (since we don't want to have to create a 
             // whole new set of types just for videos), then if it's a track we can deserialise it as a TidalTrack.
-            var returnedPage = await Client.GetAsync<PaginatedList<PlaylistItemInternal>>(Path, pageParams);
+            var returnedPage = await Client.GetAsync<PaginatedList<PageListItem>>(Path, pageParams);
 
             // Fool the caller into thinking we only get tracks from the server (heh... heh...)
             LastPageRequested = new PaginatedList<TidalTrack>
