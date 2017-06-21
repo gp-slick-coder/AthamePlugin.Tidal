@@ -170,7 +170,7 @@ namespace AthamePlugin.Tidal
         }
 
         public AccountInfo Account { get; private set; }
-        public bool IsAuthenticated => client.Session != null;
+        public bool IsAuthenticated => client.Session.SessionId != null;
 
         public override Control GetSettingsControl()
         {
@@ -205,11 +205,11 @@ namespace AthamePlugin.Tidal
             
         }
 
-        public bool HasSavedSession => settings.Session != null;
+        public bool HasSavedSession => settings.Session.SessionId != null;
 
-        public async Task<bool> RestoreAsync()
+        public Task<bool> RestoreAsync()
         {
-            if (settings.Session == null) return false;
+            if (settings.Session == null) return Task.FromResult(false);
             try
             {
 
@@ -218,9 +218,9 @@ namespace AthamePlugin.Tidal
             }
             catch (TidalException)
             {
-                return false;
+                return Task.FromResult(false);
             }
-            return client.Session != null;
+            return Task.FromResult(client.Session != null);
         }
 
         public async Task<bool> AuthenticateAsync(string username, string password, bool rememberUser)
