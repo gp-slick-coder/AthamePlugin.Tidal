@@ -30,7 +30,8 @@ namespace AthamePlugin.Tidal
             useOfflineUrlEndpointCheckbox.Checked = settings.UseOfflineUrl;
 
             rbem.ValueChanged += (sender, args) => settings.StreamQuality = (StreamingQuality)rbem.Value;
-
+            countriesComboBox.Items.AddRange(Country.AllCountries);
+            countriesComboBox.SelectedIndex = 0;
         }
 
         private void appendVerCheckBox_CheckedChanged(object sender, EventArgs e)

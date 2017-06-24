@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Athame.PluginAPI.Service;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AthamePlugin.Tidal.InternalApi.Models
 {
@@ -87,17 +88,22 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 Id = Id.ToString(),
                 IsDownloadable = AllowStreaming,
                 // Only use first artist name and picture for now
-                Artist = NameHelpers.CreateMainArtist(Artists, Artist)
+                Artist = NameHelpers.CreateMainArtist(Artists, Artist),
+                CustomMetadata = new[]
+                {
+                    MetadataHelpers.ExplicitMetadata(Explicit),
+                    MetadataHelpers.MasterMetadata(AudioQuality)
+                }
             };
 
-            
+
 
             // If the featured artists aren't already in the title, append them there
             if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(this))
             {
                 var nonMainArtists = (from artist in Artists
-                    where artist.Type != ArtistRole.Main
-                    select artist.Name).ToArray();
+                                      where artist.Type != ArtistRole.Main
+                                      select artist.Name).ToArray();
                 if (nonMainArtists.Length > 0)
                 {
                     t.Title += " " + EnglishArtistNameJoiner.JoinFeaturingArtists(nonMainArtists);

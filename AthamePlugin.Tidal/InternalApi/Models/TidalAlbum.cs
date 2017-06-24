@@ -71,7 +71,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public int Popularity { get; set; }
 
         [JsonProperty("audioQuality")]
-        public string AudioQuality { get; set; }
+        public StreamingQuality AudioQuality { get; set; }
 
         [JsonProperty("artist")]
         public FeaturedArtist Artist { get; set; }
@@ -88,7 +88,12 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 Id = Id.ToString(),
                 Title = Title,
                 CoverPicture = new TidalPicture(Cover),
-                Type = (AlbumType)TidalAlbumType
+                Type = (AlbumType)TidalAlbumType,
+                CustomMetadata = new[]
+                {
+                    MetadataHelpers.ExplicitMetadata(Explicit),
+                    MetadataHelpers.MasterMetadata(AudioQuality)
+                }
             };
             // On most calls the Album returned is a "lite" version, with only the properties above
             // available.

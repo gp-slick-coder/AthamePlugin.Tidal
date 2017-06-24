@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Athame.PluginAPI.Downloader;
 using Athame.PluginAPI.Service;
 using AthamePlugin.Tidal.InternalApi;
 
@@ -16,6 +17,7 @@ namespace AthamePlugin.Tidal
         internal PlaylistPicture(string pictureId)
         {
             PictureId = pictureId;
+            FileType = MediaFileTypes.JpegImage;
         }
 
         public override async Task<byte[]> GetLargestVersionAsync()

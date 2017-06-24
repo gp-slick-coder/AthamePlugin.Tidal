@@ -20,7 +20,7 @@ namespace AthamePlugin.Tidal
             Author = "svbnet",
             Description = "Plugin for Tidal music service.",
             Name = "Tidal",
-            Website = new Uri("https://svbnet.co")
+            Website = new Uri("https://github.com/svbnet/AthamePlugin.Tidal")
         };
 
         private TidalClient client;

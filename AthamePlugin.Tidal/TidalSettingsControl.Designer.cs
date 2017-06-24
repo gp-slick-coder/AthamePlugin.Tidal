@@ -36,6 +36,8 @@
             this.unlessAlbumVersionCheckBox = new System.Windows.Forms.CheckBox();
             this.appendVerCheckBox = new System.Windows.Forms.CheckBox();
             this.useOfflineUrlEndpointCheckbox = new System.Windows.Forms.CheckBox();
+            this.enforceCCCheckBox = new System.Windows.Forms.CheckBox();
+            this.countriesComboBox = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,11 +129,34 @@
             this.useOfflineUrlEndpointCheckbox.UseVisualStyleBackColor = true;
             this.useOfflineUrlEndpointCheckbox.CheckedChanged += new System.EventHandler(this.useOfflineUrlEndpointCheckbox_CheckedChanged);
             // 
+            // enforceCCCheckBox
+            // 
+            this.enforceCCCheckBox.AutoSize = true;
+            this.enforceCCCheckBox.Location = new System.Drawing.Point(59, 197);
+            this.enforceCCCheckBox.Name = "enforceCCCheckBox";
+            this.enforceCCCheckBox.Size = new System.Drawing.Size(142, 19);
+            this.enforceCCCheckBox.TabIndex = 12;
+            this.enforceCCCheckBox.Text = "Enforce country code:";
+            this.enforceCCCheckBox.UseVisualStyleBackColor = true;
+            this.enforceCCCheckBox.Visible = false;
+            // 
+            // countriesComboBox
+            // 
+            this.countriesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.countriesComboBox.FormattingEnabled = true;
+            this.countriesComboBox.Location = new System.Drawing.Point(207, 195);
+            this.countriesComboBox.Name = "countriesComboBox";
+            this.countriesComboBox.Size = new System.Drawing.Size(268, 23);
+            this.countriesComboBox.TabIndex = 13;
+            this.countriesComboBox.Visible = false;
+            // 
             // TidalSettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.countriesComboBox);
+            this.Controls.Add(this.enforceCCCheckBox);
             this.Controls.Add(this.useOfflineUrlEndpointCheckbox);
             this.Controls.Add(this.unlessAlbumVersionCheckBox);
             this.Controls.Add(this.appendVerCheckBox);
@@ -157,5 +182,7 @@
         private System.Windows.Forms.CheckBox unlessAlbumVersionCheckBox;
         private System.Windows.Forms.CheckBox appendVerCheckBox;
         private System.Windows.Forms.CheckBox useOfflineUrlEndpointCheckbox;
+        private System.Windows.Forms.CheckBox enforceCCCheckBox;
+        private System.Windows.Forms.ComboBox countriesComboBox;
     }
 }

@@ -53,7 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Country.cs" />
     <Compile Include="InternalApi\GenericPageManager.cs" />
+    <Compile Include="InternalApi\MetadataHelpers.cs" />
     <Compile Include="InternalApi\Models\PageListItem.cs" />
     <Compile Include="InternalApi\Models\TidalStream.cs" />
     <Compile Include="InternalApi\Models\TidalUser.cs" />
