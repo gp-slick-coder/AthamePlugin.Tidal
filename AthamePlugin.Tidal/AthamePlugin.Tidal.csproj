@@ -54,13 +54,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Country.cs" />
+    <Compile Include="InternalApi\Decryption\Aes128CounterMode.cs" />
+    <Compile Include="InternalApi\Decryption\FileKey.cs" />
+    <Compile Include="InternalApi\Decryption\TidalDecryptor.cs" />
     <Compile Include="InternalApi\GenericPageManager.cs" />
     <Compile Include="InternalApi\MetadataHelpers.cs" />
     <Compile Include="InternalApi\Models\PageListItem.cs" />
+    <Compile Include="InternalApi\Models\TidalCodec.cs" />
     <Compile Include="InternalApi\Models\TidalStream.cs" />
     <Compile Include="InternalApi\Models\TidalUser.cs" />
+    <Compile Include="InternalApi\Models\UrlPostPaywallResponse.cs" />
+    <Compile Include="InternalApi\Models\UrlUsageMode.cs" />
     <Compile Include="InternalApi\PlaylistPageManager.cs" />
     <Compile Include="PlaylistPicture.cs" />
+    <Compile Include="TidalEncryptedDownloader.cs" />
     <Compile Include="TidalPicture.cs" />
     <Compile Include="EnglishArtistNameJoiner.cs" />
     <Compile Include="InternalApi\Models\TidalAlbum.cs" />
@@ -89,6 +96,7 @@
     <Compile Include="TidalSettingsControl.Designer.cs">
       <DependentUpon>TidalSettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="TidalTrackFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TidalSettingsControl.resx">

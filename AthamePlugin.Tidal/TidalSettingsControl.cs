@@ -19,6 +19,7 @@ namespace AthamePlugin.Tidal
             this.settings = settings;
             var rbem = new RadioButtonEnumMapper();
 
+            rbem.Assign(qMqaRadioButton, (int)StreamingQuality.HiRes);
             rbem.Assign(qLosslessRadioButton, (int)StreamingQuality.Lossless);
             rbem.Assign(qHighRadioButton, (int)StreamingQuality.High);
             rbem.Assign(qLowRadioButton, (int)StreamingQuality.Low);

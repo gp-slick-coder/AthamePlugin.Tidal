@@ -7,6 +7,7 @@ using Athame.PluginAPI;
 using Athame.PluginAPI.Downloader;
 using Athame.PluginAPI.Service;
 using AthamePlugin.Tidal.InternalApi;
+using AthamePlugin.Tidal.InternalApi.Decryption;
 using AthamePlugin.Tidal.InternalApi.Models;
 
 namespace AthamePlugin.Tidal
@@ -44,16 +45,31 @@ namespace AthamePlugin.Tidal
             };
         }
 
+        public override IDownloader GetDownloader(TrackFile t)
+        {
+            var tidalTrackFile = (TidalTrackFile)t;
+            if (tidalTrackFile.FileKey == null)
+            {
+                return new HttpDownloader();
+            }
+            return new TidalEncryptedDownloader();
+        }
+
         public override async Task<TrackFile> GetDownloadableTrackAsync(Track track)
         {
-            var response = settings.UseOfflineUrl
-                ? await client.GetOfflineUrlAsync(Int32.Parse(track.Id), settings.StreamQuality)
-                : await client.GetStreamUrlAsync(Int32.Parse(track.Id), settings.StreamQuality);
-            var result = new TrackFile {DownloadUri = new Uri(response.Url), Track = track};
+            var response =
+                await
+                    client.GetUrlPostPaywall(Int32.Parse(track.Id), settings.StreamQuality,
+                        settings.UseOfflineUrl ? UrlUsageMode.Offline : UrlUsageMode.Stream);
+            var result = new TidalTrackFile
+            {
+                DownloadUri = new Uri(response.Urls.First()),
+                Track = track
+            };
             // We can assume the MIME type and bitrate from the **returned** sound quality
             // It is unwise to use the stream quality stored in settings as users with lossless
             // subscriptions will get lossy streams simply because lossless streams are unavailable
-            switch (response.SoundQuality)
+            switch (response.AudioQuality)
             {
                 case StreamingQuality.Low:
                     result.FileType = MediaFileTypes.Mpeg4Audio;
@@ -71,6 +87,10 @@ namespace AthamePlugin.Tidal
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+            if (response.SecurityToken != null)
+            {
+                result.FileKey = TidalDecryptor.ParseFileKey(Convert.FromBase64String(response.SecurityToken));
             }
             return result;
         }
@@ -95,7 +115,7 @@ namespace AthamePlugin.Tidal
             if (pathParts.Length <= 2) return null;
             var ctype = pathParts[1];
             var id = pathParts[2];
-            var result = new UrlParseResult {Id = id, Type = MediaType.Unknown, OriginalUri = url};
+            var result = new UrlParseResult { Id = id, Type = MediaType.Unknown, OriginalUri = url };
             switch (ctype)
             {
                 case "album":
@@ -123,7 +143,7 @@ namespace AthamePlugin.Tidal
 
         public override Task<SearchResult> SearchAsync(string searchText, MediaType typesToRetrieve)
         {
-            
+
             throw new NotImplementedException();
         }
 
@@ -198,7 +218,7 @@ namespace AthamePlugin.Tidal
 
         public override void Init(AthameApplication application, PluginContext pluginContext)
         {
-            
+
         }
 
         public bool HasSavedSession => settings.Session?.SessionId != null;

@@ -218,6 +218,19 @@ namespace AthamePlugin.Tidal.InternalApi
             });
         }
 
+        public async Task<UrlPostPaywallResponse> GetUrlPostPaywall(int trackId, StreamingQuality audioQuality,
+            UrlUsageMode urlUsageMode)
+        {
+            return
+                await
+                    GetAsync<UrlPostPaywallResponse>($"tracks/{trackId}/urlpostpaywall",
+                        new List<KeyValuePair<string, string>>()
+                        {
+                            new KeyValuePair<string, string>("audioquality", JToken.FromObject(audioQuality).ToString()),
+                            new KeyValuePair<string, string>("urlusagemode", JToken.FromObject(urlUsageMode).ToString()),
+                            new KeyValuePair<string, string>("assetpresentation", "FULL")
+                        });
+        }
 
     }
 }

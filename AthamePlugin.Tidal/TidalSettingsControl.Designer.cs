@@ -38,6 +38,7 @@
             this.useOfflineUrlEndpointCheckbox = new System.Windows.Forms.CheckBox();
             this.enforceCCCheckBox = new System.Windows.Forms.CheckBox();
             this.countriesComboBox = new System.Windows.Forms.ComboBox();
+            this.qMqaRadioButton = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,30 +55,31 @@
             // 
             this.flowLayoutPanel2.AutoSize = true;
             this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel2.Controls.Add(this.qMqaRadioButton);
             this.flowLayoutPanel2.Controls.Add(this.qLosslessRadioButton);
             this.flowLayoutPanel2.Controls.Add(this.qHighRadioButton);
             this.flowLayoutPanel2.Controls.Add(this.qLowRadioButton);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(59, 3);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(313, 75);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(330, 100);
             this.flowLayoutPanel2.TabIndex = 7;
             // 
             // qLosslessRadioButton
             // 
             this.qLosslessRadioButton.AutoSize = true;
-            this.qLosslessRadioButton.Location = new System.Drawing.Point(3, 3);
+            this.qLosslessRadioButton.Location = new System.Drawing.Point(3, 28);
             this.qLosslessRadioButton.Name = "qLosslessRadioButton";
-            this.qLosslessRadioButton.Size = new System.Drawing.Size(307, 19);
+            this.qLosslessRadioButton.Size = new System.Drawing.Size(293, 19);
             this.qLosslessRadioButton.TabIndex = 0;
             this.qLosslessRadioButton.TabStop = true;
-            this.qLosslessRadioButton.Text = "Lossless (FLAC, only available with Hi-Fi subscription)";
+            this.qLosslessRadioButton.Text = "Lossless (FLAC, only available on HiFi subscription)";
             this.qLosslessRadioButton.UseVisualStyleBackColor = true;
             // 
             // qHighRadioButton
             // 
             this.qHighRadioButton.AutoSize = true;
-            this.qHighRadioButton.Location = new System.Drawing.Point(3, 28);
+            this.qHighRadioButton.Location = new System.Drawing.Point(3, 53);
             this.qHighRadioButton.Name = "qHighRadioButton";
             this.qHighRadioButton.Size = new System.Drawing.Size(132, 19);
             this.qHighRadioButton.TabIndex = 1;
@@ -88,7 +90,7 @@
             // qLowRadioButton
             // 
             this.qLowRadioButton.AutoSize = true;
-            this.qLowRadioButton.Location = new System.Drawing.Point(3, 53);
+            this.qLowRadioButton.Location = new System.Drawing.Point(3, 78);
             this.qLowRadioButton.Name = "qLowRadioButton";
             this.qLowRadioButton.Size = new System.Drawing.Size(122, 19);
             this.qLowRadioButton.TabIndex = 2;
@@ -99,7 +101,7 @@
             // unlessAlbumVersionCheckBox
             // 
             this.unlessAlbumVersionCheckBox.AutoSize = true;
-            this.unlessAlbumVersionCheckBox.Location = new System.Drawing.Point(77, 118);
+            this.unlessAlbumVersionCheckBox.Location = new System.Drawing.Point(77, 143);
             this.unlessAlbumVersionCheckBox.Name = "unlessAlbumVersionCheckBox";
             this.unlessAlbumVersionCheckBox.Size = new System.Drawing.Size(217, 19);
             this.unlessAlbumVersionCheckBox.TabIndex = 10;
@@ -110,7 +112,7 @@
             // appendVerCheckBox
             // 
             this.appendVerCheckBox.AutoSize = true;
-            this.appendVerCheckBox.Location = new System.Drawing.Point(59, 93);
+            this.appendVerCheckBox.Location = new System.Drawing.Point(59, 118);
             this.appendVerCheckBox.Name = "appendVerCheckBox";
             this.appendVerCheckBox.Size = new System.Drawing.Size(146, 19);
             this.appendVerCheckBox.TabIndex = 8;
@@ -121,7 +123,7 @@
             // useOfflineUrlEndpointCheckbox
             // 
             this.useOfflineUrlEndpointCheckbox.AutoSize = true;
-            this.useOfflineUrlEndpointCheckbox.Location = new System.Drawing.Point(59, 159);
+            this.useOfflineUrlEndpointCheckbox.Location = new System.Drawing.Point(59, 184);
             this.useOfflineUrlEndpointCheckbox.Name = "useOfflineUrlEndpointCheckbox";
             this.useOfflineUrlEndpointCheckbox.Size = new System.Drawing.Size(192, 19);
             this.useOfflineUrlEndpointCheckbox.TabIndex = 11;
@@ -132,7 +134,7 @@
             // enforceCCCheckBox
             // 
             this.enforceCCCheckBox.AutoSize = true;
-            this.enforceCCCheckBox.Location = new System.Drawing.Point(59, 197);
+            this.enforceCCCheckBox.Location = new System.Drawing.Point(59, 222);
             this.enforceCCCheckBox.Name = "enforceCCCheckBox";
             this.enforceCCCheckBox.Size = new System.Drawing.Size(142, 19);
             this.enforceCCCheckBox.TabIndex = 12;
@@ -144,11 +146,22 @@
             // 
             this.countriesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.countriesComboBox.FormattingEnabled = true;
-            this.countriesComboBox.Location = new System.Drawing.Point(207, 195);
+            this.countriesComboBox.Location = new System.Drawing.Point(207, 220);
             this.countriesComboBox.Name = "countriesComboBox";
             this.countriesComboBox.Size = new System.Drawing.Size(268, 23);
             this.countriesComboBox.TabIndex = 13;
             this.countriesComboBox.Visible = false;
+            // 
+            // qMqaRadioButton
+            // 
+            this.qMqaRadioButton.AutoSize = true;
+            this.qMqaRadioButton.Location = new System.Drawing.Point(3, 3);
+            this.qMqaRadioButton.Name = "qMqaRadioButton";
+            this.qMqaRadioButton.Size = new System.Drawing.Size(324, 19);
+            this.qMqaRadioButton.TabIndex = 3;
+            this.qMqaRadioButton.TabStop = true;
+            this.qMqaRadioButton.Text = "Master (FLAC, 24-bit, only available on HiFi subscription)";
+            this.qMqaRadioButton.UseVisualStyleBackColor = true;
             // 
             // TidalSettingsControl
             // 
@@ -164,7 +177,7 @@
             this.Controls.Add(this.flowLayoutPanel2);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "TidalSettingsControl";
-            this.Size = new System.Drawing.Size(576, 270);
+            this.Size = new System.Drawing.Size(576, 313);
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
@@ -184,5 +197,6 @@
         private System.Windows.Forms.CheckBox useOfflineUrlEndpointCheckbox;
         private System.Windows.Forms.CheckBox enforceCCCheckBox;
         private System.Windows.Forms.ComboBox countriesComboBox;
+        private System.Windows.Forms.RadioButton qMqaRadioButton;
     }
 }
