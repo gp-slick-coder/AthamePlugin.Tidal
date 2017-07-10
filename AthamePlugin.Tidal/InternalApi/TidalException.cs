@@ -5,14 +5,10 @@ namespace AthamePlugin.Tidal.InternalApi
 {
     public class TidalException : Exception
     {
-        [JsonProperty("status")]
-        public int Status { get; set; }
-        [JsonProperty("subStatus")]
-        public int SubStatus { get; set; }
 
-        [JsonProperty("userMessage")]
-        public string UserMessage { get; set; }
+        internal TidalException(TidalError error) : base($"{error.Status}/{error.SubStatus}: {error.UserMessage}")
+        {
 
-        public override string Message => $"{Status}/{SubStatus}: {UserMessage}";
+        }
     }
 }

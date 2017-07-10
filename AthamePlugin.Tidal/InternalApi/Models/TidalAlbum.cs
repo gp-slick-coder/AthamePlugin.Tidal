@@ -81,7 +81,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
 
         internal List<TidalTrack> TidalTracks { get; set; }
 
-        internal Album CreateAthameAlbum()
+        internal Album CreateAthameAlbum(TidalServiceSettings settings)
         { 
             var cmAlbum = new Album
             {
@@ -104,7 +104,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
             }
             if (TidalTracks != null)
             {
-                cmAlbum.Tracks = (from track in TidalTracks select track.CreateAthameTrack()).ToList();
+                cmAlbum.Tracks = (from track in TidalTracks select track.CreateAthameTrack(settings)).ToList();
             }
             return cmAlbum;
         }

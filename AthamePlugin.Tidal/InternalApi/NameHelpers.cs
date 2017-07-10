@@ -27,6 +27,7 @@ namespace AthamePlugin.Tidal.InternalApi
             if (!settings.AppendVersionToTrackTitle) return tidalTrack.Title;
             if (settings.DontAppendAlbumVersion)
             {
+                // Compare case insensitively
                 if (tidalTrack.Version.IndexOf(AlbumVersion, StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     return tidalTrack.Title + " (" + tidalTrack.Version + ")";

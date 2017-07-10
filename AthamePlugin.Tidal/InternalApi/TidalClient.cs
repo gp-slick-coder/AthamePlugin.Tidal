@@ -108,7 +108,7 @@ namespace AthamePlugin.Tidal.InternalApi
                 var asInt = statusToken.ToObject<int>();
                 if (asInt != 200)
                 {
-                    throw result.ToObject<TidalException>();
+                    result.ToObject<TidalError>().Throw();
                 }
             }
             return result.ToObject<T>();
@@ -231,6 +231,8 @@ namespace AthamePlugin.Tidal.InternalApi
                             new KeyValuePair<string, string>("assetpresentation", "FULL")
                         });
         }
+
+        
 
     }
 }

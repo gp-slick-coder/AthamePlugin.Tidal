@@ -105,7 +105,7 @@ namespace AthamePlugin.Tidal
             {
                 Title = playlist.Title,
                 PlaylistPicture = new PlaylistPicture(playlist.Image),
-                Tracks = (from t in itemsPages.AllItems select t.CreateAthameTrack()).ToList()
+                Tracks = (from t in itemsPages.AllItems select t.CreateAthameTrack(settings)).ToList()
             };
         }
 
@@ -152,15 +152,15 @@ namespace AthamePlugin.Tidal
             var tidalAlbum = await client.GetAlbumAsync(Int32.Parse(albumId));
             if (!withTracks)
             {
-                return tidalAlbum.CreateAthameAlbum();
+                return tidalAlbum.CreateAthameAlbum(settings);
             }
             var tidalTracksPage = client.GetAlbumItems(Int32.Parse(albumId));
             await tidalTracksPage.LoadAllPagesAsync();
-            var cmAlbum = tidalAlbum.CreateAthameAlbum();
+            var cmAlbum = tidalAlbum.CreateAthameAlbum(settings);
             var cmTracks = new List<Track>();
             foreach (var track in tidalTracksPage.AllItems)
             {
-                var cmTrack = track.CreateAthameTrack();
+                var cmTrack = track.CreateAthameTrack(settings);
                 cmTrack.Album = cmAlbum;
                 cmTrack.Year = tidalAlbum.ReleaseDate.Year;
                 cmTracks.Add(cmTrack);
@@ -173,8 +173,8 @@ namespace AthamePlugin.Tidal
         {
             var track = await client.GetTrackAsync(Int32.Parse(trackId));
             var album = await client.GetAlbumAsync(track.Album.Id);
-            var athameTrack = track.CreateAthameTrack();
-            athameTrack.Album = album.CreateAthameAlbum();
+            var athameTrack = track.CreateAthameTrack(settings);
+            athameTrack.Album = album.CreateAthameAlbum(settings);
             return athameTrack;
         }
 
@@ -183,6 +183,7 @@ namespace AthamePlugin.Tidal
             client = new TidalClient();
             Account = null;
             settings.User = null;
+            settings.Session = null;
         }
 
         public AccountInfo Account { get; private set; }
@@ -221,7 +222,7 @@ namespace AthamePlugin.Tidal
 
         }
 
-        public bool HasSavedSession => settings.Session?.SessionId != null;
+        public bool HasSavedSession => settings.Session?.SessionId != null && settings.User != null;
 
         public Task<bool> RestoreAsync()
         {

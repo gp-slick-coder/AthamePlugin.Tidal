@@ -33,7 +33,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public bool StreamReady { get; set; }
 
         [JsonProperty("streamStartDate")]
-        public DateTime StreamStartDate { get; set; }
+        public DateTime? StreamStartDate { get; set; }
 
         [JsonProperty("premiumStreamingOnly")]
         public bool PremiumStreamingOnly { get; set; }
@@ -77,14 +77,14 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         [JsonProperty("album")]
         public TidalAlbum Album { get; set; }
 
-        internal Track CreateAthameTrack()
+        internal Track CreateAthameTrack(TidalServiceSettings settings)
         {
             // Always put main artists in the artist field
             var t = new Track
             {
                 DiscNumber = VolumeNumber,
                 TrackNumber = TrackNumber,
-                Title = Title,
+                Title = NameHelpers.CreateTrackTitle(settings, this),
                 Id = Id.ToString(),
                 IsDownloadable = AllowStreaming,
                 // Only use first artist name and picture for now
@@ -96,7 +96,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 }
             };
 
-
+            
 
             // If the featured artists aren't already in the title, append them there
             if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(this))
@@ -109,7 +109,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                     t.Title += " " + EnglishArtistNameJoiner.JoinFeaturingArtists(nonMainArtists);
                 }
             }
-            t.Album = Album.CreateAthameAlbum();
+            t.Album = Album.CreateAthameAlbum(settings);
             return t;
         }
 

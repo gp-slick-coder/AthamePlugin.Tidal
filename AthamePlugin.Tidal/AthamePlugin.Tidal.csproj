@@ -32,8 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Athame.PluginAPI">
-      <HintPath>..\..\Athame\Athame.PluginAPI\bin\Release\Athame.PluginAPI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\apps\athame-0.4.4-base-plugins\athame-0.4.4\Athame.PluginAPI.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -66,6 +65,7 @@
     <Compile Include="InternalApi\Models\UrlPostPaywallResponse.cs" />
     <Compile Include="InternalApi\Models\UrlUsageMode.cs" />
     <Compile Include="InternalApi\PlaylistPageManager.cs" />
+    <Compile Include="InternalApi\TidalError.cs" />
     <Compile Include="PlaylistPicture.cs" />
     <Compile Include="TidalEncryptedDownloader.cs" />
     <Compile Include="TidalPicture.cs" />
