@@ -40,7 +40,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public DateTime? DateOfBirth { get; set; }
 
         [JsonProperty("facebookUid")]
-        public int FacebookUid { get; set; }
+        public ulong FacebookUid { get; set; }
     }
 
 }

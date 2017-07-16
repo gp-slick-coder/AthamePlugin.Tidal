@@ -14,6 +14,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
     {
         AAC,
         FLAC,
-        MQA
+        MQA,
+        MP3
     }
 }

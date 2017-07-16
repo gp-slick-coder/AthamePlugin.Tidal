@@ -72,19 +72,37 @@ namespace AthamePlugin.Tidal
             switch (response.AudioQuality)
             {
                 case StreamingQuality.Low:
-                    result.FileType = MediaFileTypes.Mpeg4Audio;
                     result.BitRate = 96 * 1000;
                     break;
+
                 case StreamingQuality.High:
-                    result.FileType = MediaFileTypes.Mpeg4Audio;
                     result.BitRate = 320 * 1000;
                     break;
+
                 case StreamingQuality.HiRes:
                 case StreamingQuality.Lossless:
-                    result.FileType = MediaFileTypes.FreeLosslessAudioCodec;
                     // Bitrate doesn't really matter since it's lossless
                     result.BitRate = -1;
                     break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            switch (response.Codec)
+            {
+                case TidalCodec.AAC:
+                    result.FileType = MediaFileTypes.Mpeg4Audio;
+                    break;
+
+                case TidalCodec.FLAC:
+                case TidalCodec.MQA:
+                    result.FileType = MediaFileTypes.FreeLosslessAudioCodec;
+                    break;
+
+                case TidalCodec.MP3:
+                    result.FileType = MediaFileTypes.Mpeg3Audio;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
