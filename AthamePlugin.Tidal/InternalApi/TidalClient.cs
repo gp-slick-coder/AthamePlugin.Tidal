@@ -187,9 +187,9 @@ namespace AthamePlugin.Tidal.InternalApi
             return await GetAsync<TidalPlaylist>($"playlists/{uuid}");
         }
 
-        public PlaylistPageManager GetPlaylistTracks(string uuid)
+        public PlaylistPageManager GetPlaylistTracks(string uuid, int? itemsPerPage)
         {
-            return new PlaylistPageManager(this, $"playlists/{uuid}/items", ItemsPerPage, new List<KeyValuePair<string, string>>
+            return new PlaylistPageManager(this, $"playlists/{uuid}/items", itemsPerPage ?? ItemsPerPage, new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("order", "INDEX"),
                 new KeyValuePair<string, string>("orderDirection", "ASC")

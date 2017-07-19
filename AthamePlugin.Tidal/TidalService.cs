@@ -14,7 +14,7 @@ namespace AthamePlugin.Tidal
 {
     public class TidalService : MusicService, IUsernamePasswordAuthenticationAsync
     {
-        public override int ApiVersion => 2;
+        public override int ApiVersion => 3;
 
         public override PluginInfo Info => new PluginInfo
         {
@@ -116,15 +116,17 @@ namespace AthamePlugin.Tidal
         public override async Task<Playlist> GetPlaylistAsync(string playlistId)
         {
             var playlist = await client.GetPlaylistAsync(playlistId);
-            var itemsPages = client.GetPlaylistTracks(playlistId);
-            await itemsPages.LoadAllPagesAsync();
-
             return new Playlist
             {
                 Title = playlist.Title,
-                PlaylistPicture = new PlaylistPicture(playlist.Image),
-                Tracks = (from t in itemsPages.AllItems select t.CreateAthameTrack(settings)).ToList()
+                PlaylistPicture = new PlaylistPicture(playlist.Image)
             };
+        }
+
+        public override PagedMethod<Track> GetPlaylistItems(string playlistId, int itemsPerPage)
+        {
+            var itemsPages = client.GetPlaylistTracks(playlistId, itemsPerPage);
+            return new AthameTrackPagedMethod(settings, itemsPages);
         }
 
         public override UrlParseResult ParseUrl(Uri url)
@@ -159,9 +161,23 @@ namespace AthamePlugin.Tidal
             return result;
         }
 
-        public override Task<SearchResult> SearchAsync(string searchText, MediaType typesToRetrieve)
+        public override SearchResult Search(string searchText, MediaType typesToRetrieve, int itemsPerPage)
         {
+            throw new NotImplementedException();
+        }
 
+        public override Task<Artist> GetArtistInfoAsync(string artistId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override PagedMethod<Track> GetArtistTopTracks(string artistId, int itemsPerPage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override PagedMethod<Album> GetArtistAlbums(string artistId, int itemsPerPage)
+        {
             throw new NotImplementedException();
         }
 
@@ -202,6 +218,26 @@ namespace AthamePlugin.Tidal
             Account = null;
             settings.User = null;
             settings.Session = null;
+        }
+
+        public PagedMethod<Track> GetUserSavedTracks(int itemsPerPage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedMethod<Artist> GetUserSavedArtists(int itemsPerPage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedMethod<Album> GetUserSavedAlbums(int itemsPerPage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PagedMethod<Playlist> GetUserSavedPlaylists(int itemsPerPage)
+        {
+            throw new NotImplementedException();
         }
 
         public AccountInfo Account { get; private set; }

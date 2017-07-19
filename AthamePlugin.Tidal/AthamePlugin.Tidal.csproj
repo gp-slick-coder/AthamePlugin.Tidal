@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Athame.PluginAPI">
-      <HintPath>..\..\..\..\..\..\apps\athame-0.4.4-base-plugins\athame-0.4.4\Athame.PluginAPI.dll</HintPath>
+    <Reference Include="Athame.PluginAPI, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Athame\Athame.PluginAPI\bin\Release\Athame.PluginAPI.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -52,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AthameTrackPagedMethod.cs" />
     <Compile Include="Country.cs" />
     <Compile Include="InternalApi\Decryption\Aes128CounterMode.cs" />
     <Compile Include="InternalApi\Decryption\FileKey.cs" />
