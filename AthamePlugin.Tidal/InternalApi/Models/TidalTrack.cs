@@ -66,7 +66,8 @@ namespace AthamePlugin.Tidal.InternalApi.Models
         public bool Explicit { get; set; }
 
         [JsonProperty("audioQuality")]
-        public StreamingQuality AudioQuality { get; set; }
+        // Can be null on 'not available' tracks (those tracks are market gray on tidal playlists i.e.)
+        public StreamingQuality? AudioQuality { get; set; }
 
         [JsonProperty("artist")]
         public FeaturedArtist Artist { get; set; }
@@ -79,6 +80,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
 
         internal Track CreateAthameTrack(TidalServiceSettings settings)
         {
+
             // Always put main artists in the artist field
             var t = new Track
             {
@@ -96,7 +98,7 @@ namespace AthamePlugin.Tidal.InternalApi.Models
                 }
             };
 
-            
+
 
             // If the featured artists aren't already in the title, append them there
             if (!EnglishArtistNameJoiner.DoesTitleContainArtistString(this))

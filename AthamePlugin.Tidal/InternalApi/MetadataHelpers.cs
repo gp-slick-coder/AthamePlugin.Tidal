@@ -22,14 +22,14 @@ namespace AthamePlugin.Tidal.InternalApi
             };
         }
 
-        public static Metadata MasterMetadata(StreamingQuality quality)
+        public static Metadata MasterMetadata(StreamingQuality? quality)
         {
             return new Metadata
             {
                 CanDisplay = true,
                 IsFlag = true,
                 Name = "Master",
-                Value = (quality == StreamingQuality.HiRes).ToString()
+                Value = quality.HasValue ? (quality.Value == StreamingQuality.HiRes).ToString() : "Undefined"
             };
         }
     }
